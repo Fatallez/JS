@@ -12,8 +12,8 @@ class ProductList {
   _fetchProducts() {
     this.goods = [
       {id: 1, title: 'Notebook',  price: 20000, img:'img/notebook.jpg'},
-      {id: 2, title: 'Mouse',     price: 1500,  img: 'img/заглушка.jpg'},
-      {id: 3, title: 'Keyboard',  price: 5000,  img: 'img/заглушка.jpg'},
+      {id: 2, title: 'Mouse',     price: 1500,  img: 'img/mouse.jpg'},
+      {id: 3, title: 'Keyboard',  price: 5000,  img: 'img/keyboard.jpg'},
       {id: 4, title: 'Gamepad',   price: 4500,  img:'img/gamepad.jpg'},
     ]
   }
@@ -47,28 +47,12 @@ class ProductItem {
   }
 }
 
-const list = new ProductList();
+class CartList extends ProductList {
+    countCartPrice() {}
+}
 
-// const products = [
-//   {id: 1, title: 'Notebook',  price: 20000, img:'img/notebook.jpg'},
-//   {id: 2, title: 'Mouse',     price: 1500},
-//   {id: 3, title: 'Keyboard',  price: 5000},
-//   {id: 4, title: 'Gamepad',   price: 4500,  img:'img/gamepad.jpg'},
-// ];
-//
-// const renderProduct = (title, price, img = 'img/заглушка.jpg') => {
-//   return `<div class="product-item">
-//             <h3 class="product__title">${title}</h3>
-//             <img src='${img}' alt="alt" class="product__img">
-//             <p class="product__price">${price} руб.</p>
-//             <button class="by-btn">Добавить в корзину</button>
-//           </div>`;
-// };
-//
-// function renderProducts() {
-//   products.forEach(item => {
-//     document.querySelector('.products').insertAdjacentHTML('beforeend', renderProduct(item.title, item.price, item.img));
-// });
-// }
-//
-// renderProducts();
+class CartItem extends ProductItem {
+
+}
+
+const list = new ProductList();
