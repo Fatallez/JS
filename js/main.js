@@ -1,98 +1,48 @@
-'use strict';
-
 const API = 'https://raw.githubusercontent.com/GeekBrainsTutorial/online-store-api/master/responses';
 
-// const getRequest = (url) => {
-//   return new Promise((resolve, reject ) => {
-//     let xhr = new XMLHttpRequest();
-//     xhr.open('GET', url, true);
-//     xhr.onreadystatechange = () => {
-//       resolve(xhr.responseText);
-//       reject(console.error('err'));
-//     };
-//     xhr.send();
-//   });
-// };
-
-class ProductList {
-  constructor(container = '.products') {
-    this.container = container;
-    this.goods = [];
-    this.cart = {};
-    this.allProducts = [];
-    this.addToCart();
-    this._getProducts()
+const app = new Vue({
+  el: '#app',
+  data: {
+    catalogUrl: '/catalogData.json',
+    products: [
+      {id_product: 1, product_name: "Геймпад PS4", price: 4500},
+      {id_product: 2, product_name: "Клавиатура", price: 1200},
+      {id_product: 3, product_name: "Графический планшет", price: 18000},
+      {id_product: 4, product_name: "Стабилизатор напряжения", price: 5000},
+    ],
+    cartProducts: [],
+    imgCatalog: 'https://placehold.it/200x150',
+    searchLine: '',
+    filteredGoods: [],
+    isVisibleCart: false,
+  },
+  methods: {
+    getJson(url) {
+      return fetch(url)
+          .then(result => result.json())
+          .catch(error => {
+            console.log(error);
+          });
+    },
+    filterGoods() {
+      const regexp = new RegExp(this.searchLine, 'i');
+      this.filteredGoods = this.products.filter(product => regexp.test(product.product_name));
+      this.products.forEach(el => {
+        const block = document.querySelector(`.product-item[data-id="${el.id_product}"]`);
+        if(!this.filteredGoods.includes(el)){
+          block.classList.add('invisible');
+        } else {
+          block.classList.remove('invisible');
+        }
+      })
+     },
+  },
+  mounted() {
+    this.getJson(`${API + this.catalogUrl}`)
         .then(data => {
-          this.goods = [...data];
-          this.render();
+          for (let el of data) {
+            this.products.push(el);
+          }
         });
-  }
-
-  _getProducts() {
-    return fetch(`${API}/catalogData.json`)
-        .then(result => result.json())
-        .catch(error => {
-          console.log(error);
-        });
-  }
-
-  render() {
-    const block = document.querySelector(this.container);
-    for (let product of this.goods) {
-      const productObject = new ProductItem(product);
-      this.allProducts.push(productObject);
-      block.insertAdjacentHTML('beforeend', productObject.render());
-    }
-  }
-
-  addToCart() {
-
-  }
-}
-
-class ProductItem {
-  constructor(product, img='https://placehold.it/200x200') {
-    this.id_product = product.id_product;
-    this.product_name = product.product_name;
-    this.price = product.price;
-    this.img = img;
-  }
-
-  render() {
-    return `<div class="product-item" data-id="${this.id_product}">
-              <img src='${this.img}' alt="alt" class="product__img">
-              <h3 class="product__title">${this.product_name}</h3>              
-              <p class="product__price">${this.price} руб.</p>
-              <button id="addToCart" data-id="${this.id_product}">Добавить в корзину</button>
-            </div>`;
-  }
-
-
-}
-
-class CartList {
-  constructor(container = '.cart') {
-    this.container = container;
-    this.cartBlock = null;
-    this.clrCartButton = null;
-    this.catalogList = [];
-    this.goods = [];
-    this._getCartList();
-    this._removeCartItem();
-  }
-
-  _getCartList() {
-
-  }
-
-  _removeCartItem() {
-
-  }
-}
-
-class CartItem {
-
-}
-
-const list = new ProductList();
-const cartList = new CartList();
+  },
+});
