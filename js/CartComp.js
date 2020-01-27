@@ -1,11 +1,11 @@
 Vue.component('cart', {
-    data(){
-      return {
+    data() {
+        return {
           imgCart: 'https://placehold.it/50x100',
           cartUrl: '/getBasket.json',
           cartItems: [],
           showCart: false,
-      }
+        }
     },
     methods: {
         addProduct(product){

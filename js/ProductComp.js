@@ -1,37 +1,30 @@
 Vue.component('products', {
-    data(){
+    data() {
         return {
             catalogUrl: '/catalogData.json',
-            products: [],
-            filtered: [],
+            productList: [
+                {id_product: 232, product_name: "Геймпад PS4", price: 4500},
+                {id_product: 212, product_name: "Графический планшет", price: 16000},
+                {id_product: 356, product_name: "Монитор", price: 8500},
+                {id_product: 4654, product_name: "Кофеварка", price: 13500},
+            ],
             imgCatalog: 'https://placehold.it/200x150',
         }
     },
     methods: {
-        filter(){
-            let regexp = new RegExp(this.userSearch, 'i');
-            this.filtered = this.products.filter(el => regexp.test(el.product_name));
-        }
+
     },
-    mounted(){
-        this.$parent.getJson(`${API + this.catalogUrl}`)
-            .then(data => {
-                for(let el of data){
-                    this.products.push(el);
-                    this.filtered.push(el);
-                }
-            });
-        // this.$parent.getJson(`getProducts.json`)
-        //     .then(data => {
-        //         for(let el of data){
-        //             this.products.push(el);
-        //             this.filtered.push(el);
-        //         }
-        //     })
-    },
+        mounted() {
+            this.$parent.getJson(`${API + this.catalogUrl}`)
+                .then(data => {
+                    for(let el of data){
+                        this.productList.push(el);
+                    }
+                });
+        },
     template: `
         <div class="products">
-            <product v-for="item of filtered" :key="item.id_product" :img="imgCatalog" :product="item"></product>
+            <product v-for="item of productList" :key="item.id_product" :img="imgCatalog" :product="item" :data-id="item.id_product"></product>
         </div>
     `
 });
@@ -40,12 +33,7 @@ Vue.component('product', {
     props: ['product', 'img'],
     data() {
       return {
-          /**
-           * Создали ссылку на API нашей корзины. Т.к. все компоненты у нас регистрируются в корневом экземпляре Vue,
-           * то мы легко можем получить доступ к ним используя свойство $root.
-           * $parent можно использовать для доступа к родительскому экземпляру из дочернего.
-           */
-          cartAPI: this.$root.$refs.cart, // добираемся до компонента корзины, чтобы далее использовать метод добавления
+          cartAPI: this.$root.$refs.cart,
       };
     },
 
@@ -56,8 +44,6 @@ Vue.component('product', {
                     <h3>{{product.product_name}}</h3>
                     <p>{{product.price}}₽</p>
                     <button class="buy-btn" @click="cartAPI.addProduct(product)">Купить</button>
-<!-- 1                    <button class="buy-btn" @click="$root.$refs.cart.addProduct(product)">Купить</button>-->
-<!-- 2                    <button class="buy-btn" @click="$parent.$parent.$refs.cart.addProduct(product)">Купить</button>-->
                 </div>
             </div>
     `
